@@ -6,12 +6,11 @@ const cookies = new Cookies();
 export default class Timer extends Component {
   state = {
     working: false,
-    // workTime: moment().diff(moment(cookies.get("Arrived")), "hours"),
-    workHours: moment().diff(moment("2020-06-02 11:00:00"), "hours"),
+    workHours: moment().diff(moment(cookies.get("Arrived")), "hours"),
     workMinutes: moment
       .utc(
         moment(moment(), "HH:mm:ss").diff(
-          moment("2020-06-02 11:00:00"),
+          moment(cookies.get("Arrived")),
           "HH:mm:ss"
         )
       )
@@ -22,10 +21,20 @@ export default class Timer extends Component {
     this.setState({ working: !this.state.working });
     if (cookies.get("Arrived") == null) {
       cookies.set("Arrived", moment());
-      console.log(cookies.get("Arrived"));
+      console.log("Added the arrived cookie!");
     } else {
       cookies.remove("Arrived");
       console.log("Removed the arrived cookie!");
+    }
+  }
+
+  componentDidMount() {
+    if (cookies.get("Arrived") != null) {
+      this.setState({ working: true });
+      console.log("Working set to true");
+    } else {
+      this.setState({ working: false });
+      console.log("Working set to false");
     }
   }
 
