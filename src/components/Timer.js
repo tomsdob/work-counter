@@ -1,6 +1,9 @@
 import React, { Component } from "react";
 import Cookies from "universal-cookie";
 import moment from "moment";
+import { motion } from "framer-motion";
+import { fadeLeftIn, staggerFast } from "../assets/animations/animations";
+
 const cookies = new Cookies();
 
 export default class Timer extends Component {
@@ -39,25 +42,48 @@ export default class Timer extends Component {
   }
 
   render() {
-    const { working } = this.state;
+    const { working, workMinutes, workHours } = this.state;
     return (
-      <div className="text-center">
-        <h1 className="text-2xl font-semibold leading-none text-gray-800">
-          {working
-            ? `Time at work: ${this.state.workHours}h ${this.state.workMinutes}min`
-            : "Haven't started working yet"}
-        </h1>
-        <button
+      <motion.div
+        initial="initial"
+        animate="animate"
+        className="p-6 flex flex-col justify-start items-center text-center w-full bg-white rounded-lg shadow-xl"
+      >
+        {working ? (
+          <motion.div
+            initial="initial"
+            animate="animate"
+            variants={staggerFast}
+            className="flex flex-col"
+          >
+            <motion.span
+              variants={fadeLeftIn}
+              className="mb-3 text-6xl font-bold leading-none text-gray-800"
+            >
+              {workHours}h {workMinutes}min
+            </motion.span>
+            <motion.span
+              variants={fadeLeftIn}
+              className="mb-4 text-base font-normal leading-none text-gray-600"
+            >
+              {working ? `Time at work` : null}
+            </motion.span>
+          </motion.div>
+        ) : null}
+        <motion.button
+          whileHover={{ y: -1 }}
+          whileTap={{ y: -1, scale: 0.95 }}
+          variants={fadeLeftIn}
           onClick={() => this.toggleWork()}
           className={`${
-            this.state.working
-              ? "bg-red-500 hover:bg-red-600"
-              : "bg-green-500 hover:bg-green-600"
-          } mt-4 px-4 py-3 rounded-lg text-white transition-all duration-200 focus:outline-none focus:shadow-outline`}
+            working
+              ? "hover:bg-red-100 border-red-500 hover:border-red-600 text-red-500 hover:text-red-600"
+              : "hover:bg-green-100 border-green-500 hover:border-green-600 text-green-500 hover:text-green-600"
+          } px-4 py-3 text-base font-semibold text-white border bg-white rounded-lg hover:shadow-lg focus:outline-none`}
         >
-          {working ? "Stop working" : "Start working"}
-        </button>
-      </div>
+          {working ? "Stop working 🎉" : "Start working ⚡"}
+        </motion.button>
+      </motion.div>
     );
   }
 }
