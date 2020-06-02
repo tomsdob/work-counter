@@ -79,7 +79,7 @@ export default class Timer extends Component {
             working
               ? "hover:bg-red-100 border-red-500 hover:border-red-600 text-red-500 hover:text-red-600"
               : "hover:bg-green-100 border-green-500 hover:border-green-600 text-green-500 hover:text-green-600"
-          } px-4 py-3 text-base font-semibold text-white border bg-white rounded-lg hover:shadow-lg focus:outline-none`}
+          } px-4 py-3 text-base font-semibold text-white border bg-white rounded-lg select-none hover:shadow-lg focus:outline-none`}
         >
           {working ? "Stop working 🎉" : "Start working ⚡"}
         </motion.button>
