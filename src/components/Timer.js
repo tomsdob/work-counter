@@ -1,45 +1,54 @@
-import React, { Component } from 'react'
+import React, { Component } from "react";
+import Cookies from "universal-cookie";
+import moment from "moment";
+const cookies = new Cookies();
+
 export default class Timer extends Component {
-    state = {
-        hours: 4,
-        minutes: 10,
-        seconds: 0,
-    }
-    render() {
-        const { hours, minutes, seconds } = this.state
-        return (
-            <div className="text-center">
-                <h1 className="text-2xl font-semibold leading-none text-gray-800">Time at work:</h1>
-                <p className="mt-3 text-base font-normal leading-none text-gray-800">{ hours }h { minutes }min { seconds < 10 ? `0${ seconds }` : seconds }s</p>
-            </div>
+  state = {
+    working: false,
+    // workTime: moment().diff(moment(cookies.get("Arrived")), "hours"),
+    workHours: moment().diff(moment("2020-06-02 11:00:00"), "hours"),
+    workMinutes: moment
+      .utc(
+        moment(moment(), "HH:mm:ss").diff(
+          moment("2020-06-02 11:00:00"),
+          "HH:mm:ss"
         )
-    }
+      )
+      .format("m"),
+  };
 
-    componentDidMount() {
-        this.myInterval = setInterval(() => {
-            if(this.state.seconds === 60 ){
-                this.setState( ({ seconds }) => ({
-                    seconds: 0
-                }))
-            } else {
-                this.setState( ({ seconds }) => ({
-                    seconds: seconds + 1
-                }))
-            }
-            if(this.state.seconds % 60 === 0 && this.state.seconds > 0){
-                this.setState( ({ minutes }) => ({
-                    minutes: minutes + 1
-                }))
-            }
-            if(this.state.minutes % 60 === 0 && this.state.seconds % 60 === 0 && this.state.minutes > 0){
-                this.setState( ({ hours }) => ({
-                    hours: hours + 1
-                }))
-            }
-        }, 1000)
+  toggleWork() {
+    this.setState({ working: !this.state.working });
+    if (cookies.get("Arrived") == null) {
+      cookies.set("Arrived", moment());
+      console.log(cookies.get("Arrived"));
+    } else {
+      cookies.remove("Arrived");
+      console.log("Removed the arrived cookie!");
     }
+  }
 
-    componentWillUnmount() {
-        clearInterval(this.myInterval)
-    }
+  render() {
+    const { working } = this.state;
+    return (
+      <div className="text-center">
+        <h1 className="text-2xl font-semibold leading-none text-gray-800">
+          {working
+            ? `Time at work: ${this.state.workHours}h ${this.state.workMinutes}min`
+            : "Haven't started working yet"}
+        </h1>
+        <button
+          onClick={() => this.toggleWork()}
+          className={`${
+            this.state.working
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-green-500 hover:bg-green-600"
+          } mt-4 px-4 py-3 rounded-lg text-white transition-all duration-200 focus:outline-none focus:shadow-outline`}
+        >
+          {working ? "Stop working" : "Start working"}
+        </button>
+      </div>
+    );
+  }
 }
